@@ -4,15 +4,17 @@ import { StateProvider } from './src/context/StateContext';
 import { ToastProvider } from 'react-native-toast-notifications'
 import Drawer from './src/Navigation'
 import axios from 'axios';
+import { Audio } from 'expo-av';
+import { useEffect, useState } from 'react';
 
-axios.defaults.baseURL = 'http://10.10.1.144:1337/api/' //process.env.REACT_APP_BASE_URL
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL //'http://10.10.1.144:1337/api/'
 // axios.defaults.headers.common.Authorization = `Bearer ${process.env.REACT_APP_API_TOKEN}`
 
 axios.interceptors.request.use(function (config) {
 
   // Do something before request is sent
-  // console.log (JSON.stringify(config,null,'\t') )
-  console.log (process.env.REACT_APP_BASE_URL)
+  console.log (JSON.stringify(config,null,'\t') )
+  // console.log (process.env.REACT_APP_BASE_URL)
   return config;
 }, function (error) {
   // Do something with request error
@@ -20,10 +22,36 @@ axios.interceptors.request.use(function (config) {
 });
 
 export default function App () {
+  const [sound, setSound] = useState ();
+
+  async function playSound() {
+    console.log('Loading Sound');
+    const { sound } = await Audio.Sound.createAsync(require('./assets/musics/2004.mp3'), {isLooping: true});
+    setSound(sound);
+    console.log('Playing Sound');
+    await sound.playAsync();
+  }
+
+  useEffect (() => {
+    playSound ()
+  }, [])
+
+  useEffect(() => {
+    // playSound ()
+    return sound
+      ? () => {
+          console.log('Unloading Sound');
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
+
+
+
   return (
     <ToastProvider>
       <StateProvider>
-          <Drawer />
+          <Drawer sound={sound}/>
           <StatusBar style="auto" />
       </StateProvider>
     </ToastProvider>

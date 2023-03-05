@@ -1,8 +1,9 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Image, ImageBackground } from 'react-native';
+import { Image, View, Dimensions, Keyboard } from 'react-native';
 import styled from 'styled-components/native';
+import { Video } from 'expo-av';
 
 const levels = [
   {name: 'Kolay', id: 'easy'},
@@ -49,9 +50,51 @@ const Text = styled.Text`
   font-size: 24;
   margin-bottom: 20px;
 `
+const ButtonText = styled.Text`
+  font-size: 24;
+  color: white;
+  /* margin-bottom: 20px; */
+`
+
+const TextInput = styled.TextInput`
+  font-size: 24;
+  margin-bottom: 20px;
+  background-color: white;
+  border-radius: 5px;
+  /* width: 100%; */
+  padding: 5px 10px;
+`
+
+const SubmitButton = styled.TouchableOpacity`
+  background-color: black;
+  align-self: flex-start;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 15px ;
+  border-radius: 10px;
+`
+
+const AnswerPopup = styled.View`
+  position: absolute;
+  bottom: 0;
+  width: ${Dimensions.get ('window').width}px;
+  background-color: yellow;
+  height: ${Dimensions.get ('window').height / 5}px;
+  padding: 20px;
+`
+
+const Row = styled.View`
+  display: flex;
+  flex-direction: row;
+`
+
+
 
 function QuestionScreen({navigation, route}) {
+  const [showAnswer, setShowAnswer] = useState (undefined)
   const [question, setQuestion] = useState ()
+  const [answer, setAnswer] = useState ('')
   const getQuestion = async () => {
     try {
       const response = await axios.post ('question', {
@@ -59,13 +102,29 @@ function QuestionScreen({navigation, route}) {
         level: route.params?.level?.id,
       })
 
-      const question =  response.data[0]
+      const question =  response.data
       setQuestion (question)
 
     } catch (error) {
       console.log (error)
     }
   }
+
+  const giveAnswer = async () => {
+    Keyboard.dismiss ()
+    const response = await axios.post ('check', {
+      id: question.id,
+      answer ,
+    })
+
+    setShowAnswer (JSON.stringify (response.data))
+  }
+
+  const tryAgain = () => {
+    setShowAnswer ()
+    setAnswer ()
+  }
+
 
   useEffect (() => {
     getQuestion ()
@@ -74,17 +133,55 @@ function QuestionScreen({navigation, route}) {
     <Container style={{ flex: 1, padding: 15 }}>
       {
         question ?
-        <Text>{question?.question}</Text>:
+        <View>
+          {/* {console.log (JSON.stringify(question?.[question.type],null,'\t'))} */}
+          {question.type === 'photo' &&
+            <Image
+              onError={(err) => console.log (err)}
+              style={{width: question[question.type].width, height: question[question.type].height}}
+              source={{uri: `${process.env.REACT_APP_IMAGE_URL}${question[question.type]?.url}`}}
+            />}
+          {question.type === 'video' &&
+            <Video
+              style={{
+                height: Dimensions.get('window').height / 3,
+                width: Dimensions.get('window').width - 50,
+                marginBottom: 20
+              }}
+              resizeMode="contain"
+              shouldPlay
+              isLooping
+              // isMuted
+              source={{uri: `${process.env.REACT_APP_IMAGE_URL}${question[question.type]?.url}`}}
+            />}
+          <Text>{question?.question}</Text>
+          <TextInput
+            editable={showAnswer === undefined && true}
+            value={answer}
+            onChangeText={setAnswer}
+          />
+          <SubmitButton onPress={() => giveAnswer ()}>
+            <ButtonText>Gönder</ButtonText>
+          </SubmitButton>
+        </View>:
         null
         }
-      {/* <CategoryContainer>
-          {
-            levels.map (category => <Category onPress={() => {navigation.navigate ()}} style={{width: '45%'}} key={category.id}>
-              <Image source={{uri:'https://reactjs.org/logo-og.png'}} resizeMode="cover" style={{width: '100%', height: '100%', borderRadius: 10, opacity: 0.5}}/>
-                <CategoryHeader style={{position: 'absolute', left: 0, right: 0, top: '30%'}}>{category.name}</CategoryHeader>
-            </Category>)
-          }
-      </CategoryContainer> */}
+    {showAnswer &&
+    <AnswerPopup style={{backgroundColor: showAnswer === 'true' ? '#b7faaa' : showAnswer === 'false' ? '#ff8cbe': 'red'  }}>
+      <Text>{showAnswer === 'true' ? 'Helal!' : showAnswer === 'false' ? 'Olmadı.': '?'}</Text>
+      <Row>
+        {
+          showAnswer === 'false' &&
+          <SubmitButton style={{marginRight: 10}} onPress={() => tryAgain ()}>
+            <ButtonText>Bi' daha dene!</ButtonText>
+          </SubmitButton>
+        }
+        <SubmitButton onPress={() => {tryAgain (); getQuestion ();}}>
+          <ButtonText>Yenisi</ButtonText>
+        </SubmitButton>
+      </Row>
+    </AnswerPopup>
+    }
     </Container>
   );
 }
