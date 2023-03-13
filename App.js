@@ -13,7 +13,7 @@ axios.defaults.baseURL = process.env.REACT_APP_BASE_URL //'http://10.10.1.144:13
 axios.interceptors.request.use(function (config) {
 
   // Do something before request is sent
-  console.log (JSON.stringify(config,null,'\t') )
+  // console.log (JSON.stringify(config,null,'\t') )
   // console.log (process.env.REACT_APP_BASE_URL)
   return config;
 }, function (error) {
@@ -25,10 +25,8 @@ export default function App () {
   const [sound, setSound] = useState ();
 
   async function playSound() {
-    console.log('Loading Sound');
     const { sound } = await Audio.Sound.createAsync(require('./assets/musics/2004.mp3'), {isLooping: true});
     setSound(sound);
-    console.log('Playing Sound');
     await sound.playAsync();
   }
 
@@ -40,7 +38,6 @@ export default function App () {
     // playSound ()
     return sound
       ? () => {
-          console.log('Unloading Sound');
           sound.unloadAsync();
         }
       : undefined;

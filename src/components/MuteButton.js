@@ -19,15 +19,11 @@ function MuteButton({sound}) {
   const  [soundStates, setSoundStates] = useState ()
   const getStatus = async() => {
     const status = await sound?.getStatusAsync ()
-    // console.log ('func')
-    // console.log (status)
     setSoundStates (status)
   }
   useEffect (() => {
-    console.log ('useEffect')
     sound && getStatus ()
   },[sound])
-  console.log (soundStates)
   return (
     <Container>
       <Button onPress={() => {sound.setIsMutedAsync (!soundStates.isMuted); setSoundStates ((prev) => ({...prev, isMuted: !soundStates.isMuted}))}}>

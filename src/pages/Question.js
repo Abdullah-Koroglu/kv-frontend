@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Image, View, Dimensions, Keyboard } from 'react-native';
 import styled from 'styled-components/native';
 import { Video } from 'expo-av';
+import Vote from '../components/Vote';
 
 const levels = [
   {name: 'Kolay', id: 'easy'},
@@ -134,7 +135,7 @@ function QuestionScreen({navigation, route}) {
       {
         question ?
         <View>
-          {/* {console.log (JSON.stringify(question?.[question.type],null,'\t'))} */}
+          {console.log (JSON.stringify(question,null,'\t'))}
           {question.type === 'photo' &&
             <Image
               onError={(err) => console.log (err)}
@@ -151,7 +152,7 @@ function QuestionScreen({navigation, route}) {
               resizeMode="contain"
               shouldPlay
               isLooping
-              // isMuted
+              isMuted
               source={{uri: `${process.env.REACT_APP_IMAGE_URL}${question[question.type]?.url}`}}
             />}
           <Text>{question?.question}</Text>
@@ -163,6 +164,7 @@ function QuestionScreen({navigation, route}) {
           <SubmitButton onPress={() => giveAnswer ()}>
             <ButtonText>Gönder</ButtonText>
           </SubmitButton>
+          <Vote id={question.id} question={question} />
         </View>:
         null
         }
