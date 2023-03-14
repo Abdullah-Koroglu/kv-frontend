@@ -49,7 +49,6 @@ const Text = styled.Text`
   margin-bottom: 20px;
 `
 
-
 function LevelScreen({navigation, route}) {
   return (
     <Container style={{ flex: 1, padding: 15 }}>
@@ -57,7 +56,7 @@ function LevelScreen({navigation, route}) {
       <CategoryContainer>
           {
             levels.map (category => <Category onPress={() => {navigation.navigate ('Soru', {game : {...route.params?.game}, level: category})}} style={{width: '45%'}} key={category.id}>
-              <Image source={{uri:'https://reactjs.org/logo-og.png'}} resizeMode="cover" style={{width: '100%', height: '100%', borderRadius: 10, opacity: 0.5}}/>
+              {/* <Image source={a} resizeMode="cover" style={{width: '100%', height: '100%', borderRadius: 10, opacity: 0.5}}/> */}
                 <CategoryHeader style={{position: 'absolute', left: 0, right: 0, top: '30%'}}>{category.name}</CategoryHeader>
             </Category>)
           }

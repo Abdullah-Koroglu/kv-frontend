@@ -4,8 +4,8 @@ import { Image, ImageBackground } from 'react-native';
 import styled from 'styled-components/native';
 
 const categories = [
-  {name: 'Kurtlar Vadisi', id: 'kv'},
-  {name: 'Kurtlar Vadisi Pusu', id: 'kvp'},
+  {name: 'Kurtlar Vadisi', id: 'kv', image: require ('../../assets/kv.jpg')},
+  {name: 'Kurtlar Vadisi Pusu', id: 'kvp', image: require ('../../assets/kvp.jpg')},
 ]
 const Container = styled.View`
   flex: 1;
@@ -70,7 +70,7 @@ function HomeScreen({navigation}) {
         <CategoriesContainer>
           {
             categories.map (category => <Category onPress={() => {navigation.navigate ('Seviye', {game: category})}} style={{width: '45%'}} key={category.id}>
-              <Image source={{uri:'https://reactjs.org/logo-og.png'}} resizeMode="cover" style={{width: '100%', height: '100%', borderRadius: 10, opacity: 0.5}}/>
+              <Image source={category.image} resizeMode="cover" style={{width: '100%', height: '100%', borderRadius: 10, opacity: 0.5}}/>
                 <CategoryHeader style={{position: 'absolute', left: 0, right: 0, top: '50%'}}>{category.name}</CategoryHeader>
             </Category>)
           }

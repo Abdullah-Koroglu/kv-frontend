@@ -135,7 +135,7 @@ function QuestionScreen({navigation, route}) {
       {
         question ?
         <View>
-          {console.log (JSON.stringify(question,null,'\t'))}
+          {console.log (JSON.stringify(`${process.env.REACT_APP_IMAGE_URL}${question[question.type]?.url}`,null,'\t'))}
           {question.type === 'photo' &&
             <Image
               onError={(err) => console.log (err)}
@@ -152,7 +152,7 @@ function QuestionScreen({navigation, route}) {
               resizeMode="contain"
               shouldPlay
               isLooping
-              isMuted
+              isMuted //WILL DELETE
               source={{uri: `${process.env.REACT_APP_IMAGE_URL}${question[question.type]?.url}`}}
             />}
           <Text>{question?.question}</Text>
