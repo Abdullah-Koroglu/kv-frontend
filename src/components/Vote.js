@@ -23,6 +23,7 @@ border-radius: 5px;
 const IconContainer = styled.TouchableOpacity`
 padding: 5px 0;
 min-width: 40px;
+height: 40px;
 `
 
 function Vote({id}) {
@@ -99,12 +100,12 @@ function Vote({id}) {
     }
   }
 
-  const activeVote = {fontSize: 30, color: '#fff'}
+  const activeVote = {fontSize: 30}
   return (
     <Container>
-      <IconContainer onPress={() => {handleVoteChange (true)}}><Icon iconStyle={vote === true ? activeVote: null} color={'#cecece'} name='north'/></IconContainer>
+      <IconContainer onPress={() => {handleVoteChange (true)}}><Icon iconStyle={vote === true ? {...activeVote, color: 'green'}: null} color={'#cecece'} name='north'/></IconContainer>
       <IconContainer><Icon color={'#cecece'} name='favorite-border'/></IconContainer>
-      <IconContainer onPress={() => {handleVoteChange (false)}}><Icon iconStyle={vote === false ? activeVote: null} color={'#cecece'} name='south'/></IconContainer>
+      <IconContainer onPress={() => {handleVoteChange (false)}}><Icon iconStyle={vote === false ? {...activeVote, color: 'red'}: null} color={'#cecece'} name='south'/></IconContainer>
     </Container>
   );
 }

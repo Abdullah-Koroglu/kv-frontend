@@ -27,7 +27,7 @@ function MuteButton({sound}) {
   return (
     <Container>
       <Button onPress={() => {sound.setIsMutedAsync (!soundStates.isMuted); setSoundStates ((prev) => ({...prev, isMuted: !soundStates.isMuted}))}}>
-        <Icon color={'white'} name={soundStates?.isMuted === false ? "volume-off": soundStates?.isMuted === true ? 'volume-up': null}/>
+        <Icon color={'white'} name={soundStates?.isMuted === false ? "volume-up": soundStates?.isMuted === true ? 'volume-off': null}/>
       </Button>
     </Container>
   );
